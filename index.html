@@ -202,6 +202,7 @@ body.editing .toast { bottom: calc(170px + env(safe-area-inset-bottom, 0px)); }
   <header class="top">
     <svg class="heart-logo" viewBox="0 0 34 32" aria-hidden="true"><path d="M17 29 C6 21 2 15 3 9.5 C4 4 10 2 13.5 5 C15 6.2 16.3 8 17 9.5 C17.7 8 19 6.2 20.5 5 C24 2 30 4 31 9.5 C32 15 28 21 17 29 Z"/></svg>
     <span class="hi" data-k="hi">hiii ♡</span>
+    <button class="link" id="add-btn" type="button" hidden>+ add photos</button>
     <button class="link" id="edit-btn" type="button" hidden>✎ edit</button>
     <button class="link" id="info-btn" type="button" aria-expanded="false" aria-controls="info">info</button>
     <input id="file-input" type="file" accept="image/*" multiple hidden>
@@ -910,6 +911,8 @@ body.editing .toast { bottom: calc(170px + env(safe-area-inset-bottom, 0px)); }
     if (added) toast(`added ${added} photo${added > 1 ? "s" : ""} ♡ hit save to keep them`);
   }
   $("#eb-add").addEventListener("click", () => fileInput.click());
+  // one tap from the top bar: switch on edit mode and open the photo picker (multi-select)
+  $("#add-btn").addEventListener("click", () => { if (!editing) setEditing(true); fileInput.click(); });
   fileInput.addEventListener("change", () => { addFiles(fileInput.files); fileInput.value = ""; });
   let depth = 0;
   const isFileDrag = (e) => editing && [...(e.dataTransfer?.types || [])].includes("Files");
@@ -1020,7 +1023,7 @@ body.editing .toast { bottom: calc(170px + env(safe-area-inset-bottom, 0px)); }
       const code = e && e.code;
       if (code === "conflict") toast("a newer version was saved somewhere else, loading it…");
       else if (["not_writer", "not_granted", "not_declared", "consent_required", "capability_disabled", "capability_removed"].includes(code)) {
-        toast("this view can't save changes"); $("#edit-btn").hidden = true;
+        toast("this view can't save changes"); $("#edit-btn").hidden = $("#add-btn").hidden = true;
       } else if (code === "too_large") toast("too big to save, take a few photos out");
       else if (code === "rate_limited") toast("saving too fast, wait a minute then try again");
       else toast("couldn't save right now, try again in a moment");
@@ -1064,9 +1067,9 @@ body.editing .toast { bottom: calc(170px + env(safe-area-inset-bottom, 0px)); }
     let can = false;
     if (window.claude && typeof window.claude.use === "function") {
       const [a, u] = await Promise.all([window.claude.use("artifact"), window.claude.use("user")]);
-      art = a; can = !!a && !!u && await u.canEdit();
+      art = a; can = !!a && !!u && ((await u.canEdit()) || (await u.isOwner()));
     } else can = location.hash === "#edit";
-    $("#edit-btn").hidden = !can;
+    $("#edit-btn").hidden = $("#add-btn").hidden = !can;
   })();
 })();
 </script>
