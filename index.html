@@ -1,0 +1,1075 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+</head>
+<body>
+<title>Archive Paradis</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bowlby+One&family=Mystery+Quest&family=Silkscreen:wght@400;700&family=Shrikhand&display=swap">
+<style id="page-style">
+/* Layout: a teenage scrapbook. Hot-pink lined notebook paper covered in pen doodles; the colour wheel sits in a
+   y2k computer window with leopard-print sides; photos are glued onto the page with stars, stickers and captions.
+   Deliberately single light theme: everything is drawn on pink paper. */
+:root {
+  --paper: #f7b6d2; --paper-2: #f29cc3; --rule: rgb(96 104 214 / .30); --margin: rgb(214 40 74 / .45);
+  --ink: #1d1420; --pen: #e1304e; --white: #fffafc; --title-fill: #fffafc; --muted: #6d3f58;
+  --pixel-blue: #5b5ce8; --silver: #c9c9ce; --silver-hi: #f1f1f4; --silver-lo: #7c7c84;
+  --wheel: #fff1f7; --pick: #e1304e;
+  --chunky: "Bowlby One", "Arial Black", Impact, sans-serif;
+  --marker: "Mystery Quest", "Bradley Hand", Georgia, cursive;
+  --pen-font: "Mystery Quest", "Bradley Hand", Georgia, cursive;
+  --brown: #4b2e22; --stitch: #3b2418;
+  --pixel: "Silkscreen", "Courier New", ui-monospace, monospace;
+  --groovy: "Shrikhand", "Cooper Black", Georgia, serif;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html { background: var(--paper); overflow-x: clip; }
+body {
+  margin: 0; padding: 0 16px; position: relative; overflow-x: hidden; color: var(--ink);
+  font: 400 20px/1.3 var(--pen-font); font-synthesis: none;
+  background-color: var(--paper);
+  background-image:
+    repeating-linear-gradient(to bottom, transparent 0 29px, var(--rule) 29px 30px),
+    repeating-linear-gradient(-62deg, transparent 0 22px, rgb(0 0 0 / .035) 22px 34px, transparent 34px 51px),
+    repeating-linear-gradient(-58deg, transparent 0 37px, rgb(255 255 255 / .2) 37px 46px, transparent 46px 80px);
+}
+@media (min-width: 760px) {
+  body { background-image:
+    linear-gradient(90deg, transparent 56px, var(--margin) 56px 58px, transparent 58px 62px, var(--margin) 62px 63px, transparent 63px),
+    repeating-linear-gradient(to bottom, transparent 0 29px, var(--rule) 29px 30px),
+    repeating-linear-gradient(-62deg, transparent 0 22px, rgb(0 0 0 / .035) 22px 34px, transparent 34px 51px),
+    repeating-linear-gradient(-58deg, transparent 0 37px, rgb(255 255 255 / .2) 37px 46px, transparent 46px 80px); }
+}
+button, input, textarea { font: inherit; color: inherit; }
+:focus-visible { outline: 3px dashed var(--ink); outline-offset: 3px; }
+.wrap { max-width: 1120px; margin: 0 auto; position: relative; z-index: 1; }
+#doodles { position: absolute; left: 0; top: 0; width: 100%; z-index: 0; pointer-events: none; overflow: hidden; }
+#doodles svg { position: absolute; overflow: visible; }
+
+/* Top line */
+.top { display: flex; align-items: center; gap: 18px; padding-block: 18px 0; }
+.heart-logo { width: 34px; height: 32px; flex: none; }
+.heart-logo path { fill: var(--pick); stroke: var(--ink); stroke-width: 2.2; transition: fill .25s; }
+.top .hi { font: 400 24px/1 var(--marker); margin-right: auto; color: var(--brown); }
+.link { background: none; border: 0; padding: 4px 2px; cursor: pointer; font: 400 24px/1 var(--marker); color: var(--brown); text-decoration: underline wavy var(--pen) 1.5px; text-underline-offset: 6px; }
+.link:hover { color: var(--pen); }
+
+/* Title */
+.title { text-align: center; padding-block: 8px 30px; position: relative; }
+.title .by { font: 400 clamp(24px, 4.4vw, 40px)/1 var(--marker); margin: 0 0 4px; color: var(--brown); letter-spacing: .01em; }
+.title h1 { margin: 0; font: 400 clamp(46px, 12.5vw, 138px)/1 var(--chunky); text-transform: uppercase; letter-spacing: .02em; text-wrap: balance;
+  color: var(--title-fill); filter: url(#cut-edge) drop-shadow(3px 4px 0 rgb(59 36 24 / .28)); }
+/* every letter is cut from a different fabric, outlined in dark thread */
+.title h1 .lt { display: inline-block; color: transparent; -webkit-background-clip: text; background-clip: text; background-size: var(--ps, 60px);
+  -webkit-text-stroke: clamp(2px, .45vw, 4px) var(--stitch); padding: 0 .01em; rotate: var(--r, 0deg); translate: 0 var(--y, 0); filter: saturate(1.22) contrast(1.03); }
+body.editing .title h1 [data-k] { color: var(--title-fill); -webkit-text-stroke: 2px var(--stitch); }
+.title h1 span { display: inline-block; }
+.title .sub { font: 400 clamp(24px, 4.4vw, 40px)/1 var(--marker); margin: 16px 0 0; color: var(--brown); }
+.title .sub b { color: var(--brown); font-weight: 400; }
+.title .stripe { position: absolute; width: clamp(54px, 9vw, 92px); height: auto; }
+.stripe.l { left: 4px; top: 54%; rotate: -14deg; } .stripe.r { right: 6px; top: 18%; rotate: 12deg; }
+
+/* Coupon (info) */
+.coupon { border: 3px dashed var(--ink); background: rgb(255 250 252 / .82); padding: 18px 20px; margin: 0 auto 28px; max-width: 760px;
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 20px; rotate: -.6deg; }
+.coupon h2 { font: 700 15px/1.2 var(--pixel); letter-spacing: .04em; margin: 0 0 10px; text-transform: uppercase; }
+.coupon p { margin: 0 0 12px; }
+.coupon .line { border-bottom: 1.5px solid var(--ink); padding-bottom: 2px; display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; font-size: 22px; }
+.coupon .line small { font: 400 11px/1 var(--pixel); text-transform: uppercase; }
+.row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 12px; }
+[data-k], [data-f] { border-radius: 2px; }
+body.editing [data-k], body.editing [data-f] { outline: 2px dashed var(--ink); outline-offset: 3px; cursor: text; background: rgb(255 255 255 / .35); }
+body.editing [data-k]:focus, body.editing [data-f]:focus { outline-style: solid; background: rgb(255 255 255 / .7); }
+body.editing { padding-bottom: 150px; }
+body.editing .toast { bottom: calc(170px + env(safe-area-inset-bottom, 0px)); }
+
+/* Edit bar (only for people who can edit) */
+.editbar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 45; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px;
+  padding: 10px 16px calc(10px + env(safe-area-inset-bottom, 0px)); background: var(--ink); color: var(--white); font: 400 12px/1.2 var(--pixel); text-transform: uppercase;
+  box-shadow: 0 -4px 0 var(--pen); }
+.eb-title { font-weight: 700; font-size: 14px; color: var(--paper); }
+.eb-hint { text-transform: none; font: 400 17px/1 var(--pen-font); margin-right: auto; }
+.eb-col { display: flex; align-items: center; gap: 6px; }
+.eb-col input { width: 34px; height: 26px; padding: 0; border: 2px solid var(--white); background: none; cursor: pointer; }
+.eb-meter { color: var(--silver); }
+.eb-save { background: var(--paper); }
+.eb-save.dirty { background: var(--pen); color: var(--white); }
+.tools { position: absolute; left: 6px; top: 6px; z-index: 4; display: flex; gap: 4px; }
+.tools .px { padding: 5px 7px; font-size: 10px; }
+.foot { text-align: center; font: 400 24px/1.2 var(--marker); color: var(--brown); padding-block: 0 48px; }
+
+/* y2k silver button */
+.px {
+  font: 700 13px/1 var(--pixel); text-transform: uppercase; letter-spacing: .04em; cursor: pointer; color: var(--ink);
+  background: var(--silver); padding: 9px 12px; border: 3px solid; border-color: var(--silver-hi) var(--silver-lo) var(--silver-lo) var(--silver-hi);
+}
+.px:active { border-color: var(--silver-lo) var(--silver-hi) var(--silver-hi) var(--silver-lo); }
+
+/* Computer window */
+.window { max-width: 760px; margin: 0 auto; background: var(--ink); border: 3px solid var(--ink); box-shadow: 8px 8px 0 rgb(29 20 32 / .85); rotate: .5deg; }
+.titlebar { color: var(--white); font: 400 clamp(11px, 2.4vw, 16px)/1 var(--pixel); display: flex; justify-content: space-between; gap: 12px; padding: 9px 8px 8px; text-transform: uppercase; }
+.panes { display: grid; grid-template-columns: minmax(36px, 1fr) minmax(0, 3.4fr) minmax(36px, 1fr); gap: 3px; }
+.leopard { background-color: #dca867; background-size: 210px 210px; }
+.screen { background: var(--white); display: grid; grid-template-columns: minmax(0, 250px) minmax(0, 1fr); gap: 18px; align-items: center; padding: 18px; }
+.wheel-box { position: relative; width: 100%; max-width: 250px; aspect-ratio: 1; touch-action: none; cursor: crosshair; user-select: none; -webkit-user-select: none; justify-self: center; }
+.wheel-box canvas { position: absolute; inset: 0; width: 100%; height: 100%; border-radius: 50%; }
+.handle { position: absolute; width: 26px; height: 26px; margin: -13px 0 0 -13px; border-radius: 50%; border: 3px solid var(--ink); background: var(--pick); pointer-events: none; }
+.halo { position: absolute; width: 60px; height: 60px; margin: -30px 0 0 -30px; border-radius: 50%; border: 2px dashed var(--ink); pointer-events: none; }
+.readout { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.hint { margin: 0; font: 400 23px/1.1 var(--marker); color: var(--brown); }
+.hint b { color: var(--pen); font-weight: 400; }
+.nums { font: 400 13px/1 var(--pixel); display: flex; gap: 14px; flex-wrap: wrap; }
+.hexrow { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; font: 400 14px/1 var(--pixel); }
+.hexrow .sw { width: 20px; height: 20px; background: var(--pick); border: 2px solid var(--ink); }
+.match { font: 400 19px/1 var(--pen-font); color: var(--muted); }
+.transport { margin-top: 3px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 3px; }
+.transport .px { padding: 7px 0; font-size: 15px; letter-spacing: -.12em; }
+.bottom { display: grid; grid-template-columns: minmax(36px, 1fr) minmax(0, 3.4fr) minmax(36px, 1fr); gap: 3px; margin-top: 3px; }
+.bigbtn { font: 700 clamp(11px, 2.6vw, 20px)/1 var(--pixel); text-transform: uppercase; border: 0; cursor: pointer; padding: 10px 4px; color: var(--ink); }
+.bigbtn.blue { background: var(--pixel-blue); }
+.bigbtn.grey { background: var(--silver); }
+.ticker { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 4px 14px; padding: 8px 6px; }
+.ticker button { background: none; border: 0; color: var(--white); font: 400 clamp(11px, 2.2vw, 14px)/1 var(--pixel); cursor: pointer; padding: 2px; text-transform: uppercase; }
+.ticker button:hover, .ticker button[aria-pressed="true"] { color: var(--paper); text-decoration: underline; }
+
+/* Photos glued onto the page */
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 230px), 1fr)); gap: 56px 34px; padding-block: 64px 90px; }
+@media (max-width: 600px) { .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 40px 16px; } }
+.card { position: relative; margin: 0; padding: 0; text-align: center; display: block; width: 100%;
+  rotate: var(--tilt, 0deg); translate: 0 var(--drop, 0px); transition: rotate .3s, scale .3s; }
+.card .pic, .card .dots { transition: filter .4s; }
+.card:hover { rotate: 0deg; scale: 1.04; z-index: 3; }
+.card.far .pic, .card.far .dots { filter: saturate(.2) brightness(1.08) contrast(.85); }
+.card.far .cap { color: var(--muted); }
+.card .pic { display: block; width: 100%; padding: 0; border: 0; background: none; cursor: zoom-in; box-shadow: 2px 3px 0 rgb(29 20 32 / .18), 0 10px 18px rgb(120 30 70 / .18); }
+.card img { display: block; width: 100%; aspect-ratio: 4 / 5; object-fit: cover; }
+.card .cap { display: block; margin-top: 8px; font: 400 21px/1.1 var(--pen-font); color: var(--brown); }
+.card .dots { display: flex; justify-content: center; gap: 5px; margin-top: 5px; }
+.card .dots i { width: 14px; height: 14px; border-radius: 50%; border: 1.5px solid var(--ink); }
+.star { position: absolute; top: -20px; right: -14px; width: 50px; height: 50px; z-index: 2; }
+.star text { font: 400 18px var(--chunky); }
+/* craft stickers: rhinestones, paper stars, die-cut butterflies, flowers, jelly hearts */
+.deco { position: absolute; z-index: 2; pointer-events: none; height: auto; overflow: visible; rotate: var(--dr, 0deg); }
+.deco.flat { filter: drop-shadow(0 1px .6px rgb(70 30 40 / .35)) drop-shadow(1px 2px 2px rgb(70 30 40 / .18)); }
+.deco.raised { filter: drop-shadow(0 1.5px 1px rgb(40 15 30 / .45)) drop-shadow(1.5px 3px 3px rgb(40 15 30 / .25)); }
+.add { display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 4px; aspect-ratio: 4 / 5; width: 100%; cursor: pointer;
+  border: 3px dashed var(--ink); background: rgb(255 250 252 / .55); font: 400 19px/1.15 var(--pen-font); color: var(--brown); rotate: 1.5deg; padding: 10px; }
+.add strong { font: 400 30px/1 var(--marker); color: var(--pen); }
+.add:hover { background: rgb(255 250 252 / .85); }
+
+/* Overlays */
+.overlay { position: fixed; inset: 0; z-index: 50; display: grid; place-items: center; background: color-mix(in srgb, var(--paper) 92%, transparent); font: 400 40px/1 var(--marker); border: 4px dashed var(--ink); }
+.lb { position: fixed; inset: 0; z-index: 40; background: var(--paper); background-image: repeating-linear-gradient(to bottom, transparent 0 29px, var(--rule) 29px 30px);
+  display: flex; flex-direction: column; gap: 12px; padding: calc(14px + env(safe-area-inset-top, 0px)) 16px calc(14px + env(safe-area-inset-bottom, 0px)); }
+.lb .bar { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+.lb .count { font: 400 26px/1 var(--marker); margin-right: auto; }
+.lb .stage { flex: 1; min-height: 0; display: grid; place-items: center; }
+.lb .stage img { max-width: 100%; max-height: 100%; object-fit: contain; rotate: -1deg; box-shadow: 3px 4px 0 rgb(29 20 32 / .25); }
+.lb .cap { text-align: center; font: 400 26px/1.1 var(--pen-font); color: var(--brown); }
+.chips { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+.chip { display: flex; align-items: center; gap: 6px; background: var(--white); border: 2px solid var(--ink); padding: 4px 9px 4px 4px; font: 400 12px/1 var(--pixel); cursor: pointer; }
+.chip span { width: 18px; height: 18px; border: 1.5px solid var(--ink); }
+.toast { position: fixed; left: 50%; bottom: calc(22px + env(safe-area-inset-bottom, 0px)); translate: -50% 0; z-index: 60; background: var(--ink); color: var(--white);
+  font: 400 13px/1 var(--pixel); padding: 11px 14px; text-transform: uppercase; box-shadow: 4px 4px 0 var(--pen); }
+
+@media (max-width: 640px) {
+  .eb-hint { display: none; }
+  .title { padding-top: 14px; }
+  .title .by { margin-bottom: 12px; }
+  .title h1 { font-size: 11.2vw; line-height: 1.08; }
+  .title .stripe { width: 44px; }
+  .stripe.l { left: -4px; top: 76%; } .stripe.r { right: -2px; top: -6px; }
+  .screen { grid-template-columns: minmax(0, 1fr); padding: 14px; gap: 12px; }
+  .wheel-box { max-width: 210px; }
+  .readout { align-items: center; text-align: center; }
+  .coupon { grid-template-columns: minmax(0, 1fr); }
+  .card .cap { font-size: 18px; }
+  .deco.main { scale: .72; }
+  .star { width: 42px; height: 42px; right: -10px; }
+}
+@media (prefers-reduced-motion: reduce) { .card { transition: none; } .card:hover { scale: 1; } }
+</style>
+
+<template id="page-shell">
+<div id="doodles" aria-hidden="true"></div>
+
+<div class="wrap">
+  <header class="top">
+    <svg class="heart-logo" viewBox="0 0 34 32" aria-hidden="true"><path d="M17 29 C6 21 2 15 3 9.5 C4 4 10 2 13.5 5 C15 6.2 16.3 8 17 9.5 C17.7 8 19 6.2 20.5 5 C24 2 30 4 31 9.5 C32 15 28 21 17 29 Z"/></svg>
+    <span class="hi" data-k="hi">hiii ♡</span>
+    <button class="link" id="edit-btn" type="button" hidden>✎ edit</button>
+    <button class="link" id="info-btn" type="button" aria-expanded="false" aria-controls="info">info</button>
+    <input id="file-input" type="file" accept="image/*" multiple hidden>
+  </header>
+
+  <div class="title">
+    <svg class="stripe l" viewBox="0 0 60 56" aria-hidden="true"></svg>
+    <svg class="stripe r" viewBox="0 0 60 56" aria-hidden="true"></svg>
+    <p class="by" data-k="by">welcome 2 the</p>
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="cut-edge"><feTurbulence type="fractalNoise" baseFrequency=".045" numOctaves="2" seed="4"/><feDisplacementMap in="SourceGraphic" scale="3.2"/></filter></svg>
+    <h1><span data-k="t1">archive</span> <span data-k="t2">paradis</span></h1>
+    <p class="sub"><span data-k="sub">a visual collection by</span> <b data-k="name">posh</b></p>
+  </div>
+
+  <section class="coupon" id="info" hidden>
+    <div>
+      <h2 data-k="c1h">★ Fill in this coupon ★</h2>
+      <p data-k="about">this is my little archive of photos + colours i love. if u want a shoot or just wanna say hi, send me a message ♡</p>
+      <div class="line"><small data-k="sendto">Send to:</small><span id="email" data-k="email">hello@yourdomain.com</span></div>
+      <div class="row"><button class="px" id="copy-email" type="button">Copy email</button></div>
+    </div>
+    <div>
+      <h2 data-k="c2h">★ How it works ★</h2>
+      <p data-k="how">drag the dot on the colour wheel and the photos re-sort by colour. tap any photo to see it big + copy its colours.</p>
+    </div>
+  </section>
+
+  <section class="window" aria-label="Find photos by colour">
+    <div class="titlebar"><span data-k="bar1">Posh's archive</span><span data-k="bar2">Colour search</span></div>
+    <div class="panes">
+      <div class="leopard"></div>
+      <div>
+        <div class="screen">
+          <div class="wheel-box" id="wheel" role="slider" tabindex="0" aria-label="Colour picker. Arrow keys move the dot." aria-valuetext="">
+            <canvas id="wheel-canvas"></canvas>
+            <div class="halo" id="halo"></div>
+            <div class="handle" id="handle"></div>
+          </div>
+          <div class="readout">
+            <p class="hint"><b data-k="hintA">drag the dot</b> <span data-k="hintB">to find photos by colour ✿</span></p>
+            <div class="nums"><span>HUE <b id="hue">000°</b></span><span>SAT <b id="sat">00%</b></span></div>
+            <div class="hexrow"><span class="sw"></span><span id="hex">#e1304e</span><button class="px" id="copy-hex" type="button">Copy</button></div>
+            <span class="match" id="match"></span>
+          </div>
+        </div>
+        <div class="transport">
+          <button class="px" id="rew" type="button" aria-label="Previous colour">◀◀</button>
+          <button class="px" id="play" type="button" aria-label="Play through colours">▶</button>
+          <button class="px" id="ffw" type="button" aria-label="Next colour">▶▶</button>
+        </div>
+      </div>
+      <div class="leopard"></div>
+    </div>
+    <div class="bottom">
+      <button class="bigbtn blue" id="browse" type="button"><span data-k="browse">Browse</span></button>
+      <div class="ticker" id="ticker"></div>
+      <button class="bigbtn grey" id="lucky" type="button"><span data-k="lucky">Pick 4 me</span></button>
+    </div>
+  </section>
+
+  <main class="grid" id="grid"></main>
+  <footer class="foot"><span data-k="foot">made with love by posh ♡ archive paradis</span></footer>
+</div>
+
+<div class="editbar" id="editbar" hidden>
+  <span class="eb-title">✎ Editing</span>
+  <span class="eb-hint">tap any dashed text to change it</span>
+  <label class="eb-col">paper <input type="color" id="c-paper"></label>
+  <label class="eb-col">hearts <input type="color" id="c-pen"></label>
+  <label class="eb-col">title <input type="color" id="c-title"></label>
+  <button class="px" id="eb-add" type="button">+ Photos</button>
+  <span class="eb-meter" id="eb-meter"></span>
+  <button class="px" id="eb-undo" type="button">Undo all</button>
+  <button class="px" id="eb-done" type="button">Done</button>
+  <button class="px eb-save" id="eb-save" type="button">Save</button>
+</div>
+
+<div class="overlay" id="overlay" hidden>drop it in the archive ♡</div>
+<div class="lb" id="lb" hidden role="dialog" aria-modal="true" aria-label="Photo">
+  <div class="bar">
+    <span class="count" id="lb-count"></span>
+    <button class="px" id="lb-prev" type="button">◀ Prev</button>
+    <button class="px" id="lb-next" type="button">Next ▶</button>
+    <button class="px" id="lb-close" type="button">Close ✕</button>
+  </div>
+  <div class="stage"><img id="lb-img" alt=""></div>
+  <div class="cap" id="lb-cap"></div>
+  <div class="chips" id="lb-chips"></div>
+</div>
+<div class="toast" id="toast" hidden></div>
+</template>
+<script type="application/json" id="archive-data">{"v":1,"text":{"by":"welcome 2 ","name":"posh","bar2":"Colour search","email":"parakwiss@gmail.com","about":"this is my little archive of photos + colours i love! ♡ "},"theme":{"pen":"#f78296"},"photos":[]}</script>
+<script id="page-app">
+(() => {
+  /* ---------- the page is built from its own source, so Save can republish it ---------- */
+  const shell = document.getElementById("page-shell");
+  const SOURCE = {
+    style: document.getElementById("page-style").outerHTML,
+    shell: shell.outerHTML,
+    app: document.getElementById("page-app").outerHTML,
+    links: [...document.querySelectorAll("link")].filter((l) => /fonts\.g/.test(l.href)).map((l) => l.outerHTML).join("\n")
+  };
+  shell.before(shell.content.cloneNode(true));
+
+  const $ = (s) => document.querySelector(s);
+  const grid = $("#grid");
+  let photos = [];                 // {id, src, w, h, palette, pts, sample?, added, score}
+  let pick = { x: 0.62, y: 0.48 }; // handle position in unit-disc coordinates (x right, y up)
+
+  /* ---------- tiny seeded random, so doodles stay put between visits ---------- */
+  const rng = (seed) => () => ((seed = (seed * 1664525 + 1013904223) >>> 0) / 4294967296);
+  const hash = (s) => { let h = 2166136261; for (const c of s) h = Math.imul(h ^ c.charCodeAt(0), 16777619); return h >>> 0; };
+
+  /* ---------- the archive's content lives in the page itself ---------- */
+  let state;
+  try { state = JSON.parse(document.getElementById("archive-data").textContent); } catch { state = {}; }
+  state.text ||= {}; state.theme ||= {}; state.photos ||= [];
+  const LIMIT = 15e6;             // artifacts top out at 16 MB; leave room for the page itself
+  let saved = "";                 // serialised state as last saved, to know what changed
+  const store = {
+    get(k) { try { return localStorage.getItem(k); } catch { return null; } },
+    set(k, v) { try { localStorage.setItem(k, v); } catch {} }
+  };
+
+  /* ---------- colour maths ---------- */
+  function rgbToHsv(r, g, b) {
+    r /= 255; g /= 255; b /= 255;
+    const mx = Math.max(r, g, b), mn = Math.min(r, g, b), d = mx - mn;
+    let h = 0;
+    if (d) h = mx === r ? ((g - b) / d) % 6 : mx === g ? (b - r) / d + 2 : (r - g) / d + 4;
+    return [((h * 60) + 360) % 360, mx ? d / mx : 0, mx];
+  }
+  function hslToRgb(h, s, l) {
+    const k = (n) => (n + h / 30) % 12, a = s * Math.min(l, 1 - l);
+    const f = (n) => l - a * Math.max(-1, Math.min(k(n) - 3, 9 - k(n), 1));
+    return { r: f(0) * 255, g: f(8) * 255, b: f(4) * 255 };
+  }
+  const hex = (c) => "#" + [c.r, c.g, c.b].map((v) => Math.round(v).toString(16).padStart(2, "0")).join("");
+  const toDisc = (h, s) => { const a = (h - 90) * Math.PI / 180; return { x: Math.cos(a) * s, y: -Math.sin(a) * s }; };
+  const fromDisc = (x, y) => ({ h: ((Math.atan2(-y, x) * 180 / Math.PI) + 90 + 360) % 360, s: Math.min(1, Math.hypot(x, y)) });
+
+  // A cute name for a colour, used in the handwritten captions
+  function colourName(c) {
+    const [h, s, v] = rgbToHsv(c.r, c.g, c.b);
+    if (v < .18) return "black";
+    if (s < .14) return v > .85 ? "white" : v > .55 ? "silver" : "grey";
+    if (s < .3 && v > .75) return h < 60 || h > 300 ? "blush" : "cream";
+    const names = [[12, "red"], [25, "coral"], [40, "peach"], [55, "honey"], [75, "lemon"], [160, "green"], [195, "teal"], [250, "blue"], [285, "purple"], [320, "plum"], [345, "pink"], [361, "red"]];
+    let n = names.find(([lim]) => h < lim)[1];
+    if (n === "peach" && v < .55) n = "brown";
+    if (n === "green" && v < .45) n = "forest";
+    if (n === "pink" && v < .5) n = "berry";
+    return n;
+  }
+  function caption(p) {
+    const names = [];
+    for (const c of p.palette) { const n = colourName(c); if (!names.includes(n)) names.push(n); if (names.length === 2) break; }
+    return names.length > 1 ? `${names[0]} & ${names[1]}` : `all ${names[0] || "dreamy"}`;
+  }
+
+  // Downscale, sample pixels for the wheel, and k-means the 5 key colours
+  function analyse(img) {
+    const W = 64, H = Math.max(1, Math.round(W * img.naturalHeight / img.naturalWidth));
+    const c = document.createElement("canvas"); c.width = W; c.height = H;
+    const x = c.getContext("2d", { willReadFrequently: true }); x.drawImage(img, 0, 0, W, H);
+    const d = x.getImageData(0, 0, W, H).data, px = [];
+    for (let i = 0; i < d.length; i += 4) px.push([d[i], d[i + 1], d[i + 2]]);
+    const pts = [], step = Math.max(1, Math.floor(px.length / 260));
+    for (let i = 0; i < px.length; i += step) {
+      const [r, g, b] = px[i], [h, s, v] = rgbToHsv(r, g, b);
+      if (v < .12) continue;
+      const p = toDisc(h, s * Math.min(1, v * 1.4));
+      pts.push({ x: p.x, y: p.y, r, g, b });
+    }
+    const k = 5, byL = px.slice().sort((a, b) => (a[0] + a[1] + a[2]) - (b[0] + b[1] + b[2]));
+    let cents = Array.from({ length: k }, (_, i) => byL[Math.floor((i + .5) / k * byL.length)].slice());
+    for (let it = 0; it < 10; it++) {
+      const sums = cents.map(() => [0, 0, 0, 0]);
+      for (const p of px) {
+        let best = 0, bd = Infinity;
+        cents.forEach((cc, j) => { const dd = (p[0] - cc[0]) ** 2 + (p[1] - cc[1]) ** 2 + (p[2] - cc[2]) ** 2; if (dd < bd) { bd = dd; best = j; } });
+        const s = sums[best]; s[0] += p[0]; s[1] += p[1]; s[2] += p[2]; s[3]++;
+      }
+      cents = sums.map((s, j) => s[3] ? [s[0] / s[3], s[1] / s[3], s[2] / s[3], s[3]] : [...cents[j].slice(0, 3), 0]);
+    }
+    const palette = cents.map(([r, g, b, n]) => ({ r, g, b, share: (n || 0) / px.length }))
+      .filter((c) => c.share > 0).sort((a, b) => b.share - a.share);
+    return { palette, pts };
+  }
+
+  /* ---------- hand-drawn bits ---------- */
+  function heartPath(rand, cx, cy, size, wobble) {
+    let d = "";
+    for (let i = 0; i <= 40; i++) {
+      const t = i / 40 * Math.PI * 2;
+      const x = 16 * Math.sin(t) ** 3, y = -(13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t));
+      const j = () => (rand() - .5) * wobble;
+      d += (i ? "L" : "M") + (cx + x * size / 34 + j()).toFixed(1) + " " + (cy + y * size / 34 + j()).toFixed(1);
+    }
+    return d;
+  }
+  function doodleHeart(rand) {
+    const s = 22 + rand() * 30, scribble = rand() < .35;
+    let out = `<path d="${heartPath(rand, 30, 28, s, 1.4)}" fill="none" style="stroke:var(--pen)" stroke-width="1.8" stroke-linejoin="round"/>`;
+    if (rand() < .6) out += `<path d="${heartPath(rand, 30, 28, s * .97, 2)}" fill="none" style="stroke:var(--pen)" stroke-width="1.2" opacity=".8"/>`;
+    if (scribble) {
+      let z = "M" + (30 - s * .3) + " " + (28 - s * .2);
+      for (let i = 0; i < 9; i++) z += ` L${(30 - s * .32 + i * s * .08).toFixed(1)} ${(i % 2 ? 28 + s * .18 : 28 - s * .22).toFixed(1)}`;
+      out += `<path d="${z}" fill="none" style="stroke:var(--pen)" stroke-width="1.3" opacity=".75"/>`;
+    }
+    return out;
+  }
+  function doodleFlower(rand) {
+    const cols = ["#ff5fa2", "#4fb6ff", "#ffd93b", "#7ed957", "#b07cff", "#ff8a3d"], c = cols[Math.floor(rand() * cols.length)];
+    let out = "";
+    for (let i = 0; i < 5; i++) {
+      const a = i / 5 * Math.PI * 2 + rand() * .3, x = 30 + Math.cos(a) * 8, y = 28 + Math.sin(a) * 8;
+      out += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="6.2" fill="${c}" stroke="#1d1420" stroke-width="1.1"/>`;
+    }
+    return out + `<circle cx="30" cy="28" r="4.6" fill="#ffd93b" stroke="#1d1420" stroke-width="1.1"/>`;
+  }
+  // a rainbow-striped heart, like the ones coloured in with felt tips
+  function stripedHeart(el, seed) {
+    const rand = rng(seed), id = "sh" + seed, cols = ["#ff4f9a", "#ff86bf", "#ffb3d6", "#ffc8a8", "#fff0a6", "#d9b8ff", "#ff6fae"];
+    const stripes = cols.map((c, i) => `<rect x="0" y="${i * 8}" width="60" height="8.5" fill="${c}"/>`).join("");
+    const d = heartPath(rand, 30, 26, 52, 1.2);
+    el.innerHTML = `<defs><clipPath id="${id}"><path d="${d}"/></clipPath></defs><g clip-path="url(#${id})">${stripes}</g><path d="${d}" fill="none" stroke="#3b2418" stroke-width="2"/>`;
+  }
+  function starSVG(n, colour, rand) {
+    let d = "";
+    for (let i = 0; i < 10; i++) {
+      const a = -Math.PI / 2 + i * Math.PI / 5, r = (i % 2 ? 9 : 22) + (rand() - .5) * 2.4;
+      d += (i ? "L" : "M") + (25 + Math.cos(a) * r).toFixed(1) + " " + (26 + Math.sin(a) * r).toFixed(1);
+    }
+    const ink = colour === "#ffd93b" ? "#1d1420" : "#fffafc";
+    return `<svg class="star" viewBox="0 0 50 50" aria-hidden="true"><path d="${d}Z" fill="${colour}" stroke="#1d1420" stroke-width="1.8" stroke-linejoin="round"/><text x="25" y="31" text-anchor="middle" fill="${ink}">${n}</text></svg>`;
+  }
+
+  let lastDoodleH = 0;
+  function drawDoodles() {
+    const H = document.documentElement.scrollHeight, W = document.documentElement.clientWidth;
+    if (Math.abs(H - lastDoodleH) < 40) return;
+    lastDoodleH = H;
+    const box = $("#doodles"); box.style.height = H + "px";
+    const rand = rng(hash("posh" + Math.round(W / 100)));
+    const n = Math.round(W * H / 16000);
+    let html = "";
+    for (let i = 0; i < n; i++) {
+      const x = rand() * (W - 40), y = rand() * (H - 40), r = (rand() - .5) * 50, flower = rand() < .14;
+      const sz = flower ? 26 + rand() * 10 : 30 + rand() * 26;
+      html += `<svg viewBox="0 0 60 56" style="left:${x.toFixed(0)}px;top:${y.toFixed(0)}px;width:${sz.toFixed(0)}px;rotate:${r.toFixed(0)}deg">${flower ? doodleFlower(rand) : doodleHeart(rand)}</svg>`;
+    }
+    box.innerHTML = html;
+  }
+
+  // Cheetah fur, drawn once on a canvas as a seamless tile
+  function cheetahTile() {
+    const S = 420, c = document.createElement("canvas"); c.width = c.height = S;
+    const x = c.getContext("2d"), rand = rng(91);
+    const wrap = (fn) => { for (const ox of [-S, 0, S]) for (const oy of [-S, 0, S]) { x.save(); x.translate(ox, oy); fn(); x.restore(); } };
+    x.fillStyle = "#dca867"; x.fillRect(0, 0, S, S);
+    // soft patches of lighter and darker fur
+    for (let i = 0; i < 22; i++) {
+      const cx = rand() * S, cy = rand() * S, r = 50 + rand() * 110, light = rand() < .55;
+      wrap(() => {
+        const g = x.createRadialGradient(cx, cy, 0, cx, cy, r);
+        g.addColorStop(0, light ? "rgb(246 214 160 / .55)" : "rgb(176 118 58 / .45)"); g.addColorStop(1, "rgb(220 168 103 / 0)");
+        x.fillStyle = g; x.fillRect(cx - r, cy - r, r * 2, r * 2);
+      });
+    }
+    // fur grain: thousands of short strands
+    x.lineCap = "round";
+    for (let i = 0; i < 9000; i++) {
+      const sx = rand() * S, sy = rand() * S, a = -0.5 + (rand() - .5) * .7, len = 2.5 + rand() * 5;
+      x.strokeStyle = rand() < .5 ? `rgb(255 236 200 / ${(.08 + rand() * .14).toFixed(2)})` : `rgb(110 64 24 / ${(.06 + rand() * .12).toFixed(2)})`;
+      x.lineWidth = .6 + rand() * .7;
+      x.beginPath(); x.moveTo(sx, sy); x.lineTo(sx + Math.cos(a) * len, sy + Math.sin(a) * len); x.stroke();
+    }
+    // solid, irregular black spots, spaced out like the real coat
+    const spots = [];
+    for (let tries = 0; tries < 2600 && spots.length < 95; tries++) {
+      const cx = rand() * S, cy = rand() * S, r = 5 + rand() * 7.5;
+      const ok = spots.every(([sx, sy, sr]) => { let dx = Math.abs(sx - cx), dy = Math.abs(sy - cy); dx = Math.min(dx, S - dx); dy = Math.min(dy, S - dy); return Math.hypot(dx, dy) > sr + r + 13; });
+      if (ok) spots.push([cx, cy, r]);
+    }
+    for (const [cx, cy, r] of spots) {
+      const n = 16, rot = rand() * Math.PI, stretch = 1 + rand() * .45, pts = [];
+      for (let k = 0; k < n; k++) { const a = k / n * Math.PI * 2, rr = r * (.72 + rand() * .42); pts.push([Math.cos(a) * rr * stretch, Math.sin(a) * rr]); }
+      wrap(() => {
+        x.save(); x.translate(cx, cy); x.rotate(rot);
+        x.shadowColor = "rgb(26 16 8 / .6)"; x.shadowBlur = 2.2; x.fillStyle = "#1b120b";
+        x.beginPath();
+        pts.forEach(([px, py], k) => { const [nx, ny] = pts[(k + 1) % n]; const mx = (px + nx) / 2, my = (py + ny) / 2; k ? x.quadraticCurveTo(px, py, mx, my) : x.moveTo(mx, my); });
+        x.closePath(); x.fill(); x.restore();
+      });
+    }
+    return c.toDataURL("image/jpeg", .9);
+  }
+
+  // Little fabric swatches the title letters are cut from
+  function fabricTiles() {
+    const make = (size, draw) => { const c = document.createElement("canvas"); c.width = c.height = size; draw(c.getContext("2d"), size); return [c.toDataURL("image/png"), size / 2]; };
+    const dot = (x, cx, cy, r, f) => { x.fillStyle = f; x.beginPath(); x.arc(cx, cy, r, 0, Math.PI * 2); x.fill(); };
+    const heart = (x, cx, cy, s, f) => { x.fillStyle = f; x.beginPath(); x.moveTo(cx, cy + s * .9);
+      x.bezierCurveTo(cx - s * 1.4, cy, cx - s * .8, cy - s, cx, cy - s * .35); x.bezierCurveTo(cx + s * .8, cy - s, cx + s * 1.4, cy, cx, cy + s * .9); x.fill(); };
+    return [
+      make(120, (x, S) => { // lilac felt with buttons
+        x.fillStyle = "#d9c4f5"; x.fillRect(0, 0, S, S);
+        [[30, 34, "#fff6c9"], [88, 82, "#ffd3e4"], [90, 22, "#c9f0e0"], [28, 96, "#cfe3ff"]].forEach(([cx, cy, f]) => {
+          dot(x, cx, cy, 15, "#9b7cc6"); dot(x, cx, cy, 13, f); x.strokeStyle = "rgb(155 124 198 / .5)"; x.lineWidth = 1.5; x.beginPath(); x.arc(cx, cy, 9, 0, 7); x.stroke();
+          [[-3, -3], [3, -3], [-3, 3], [3, 3]].forEach(([dx, dy]) => dot(x, cx + dx, cy + dy, 1.6, "#9b7cc6"));
+        });
+      }),
+      make(60, (x, S) => { x.fillStyle = "#bfe0ff"; x.fillRect(0, 0, S, S); [[15, 15], [45, 45], [45, 15], [15, 45]].forEach(([a, b], i) => dot(x, a, b, i < 2 ? 5 : 3, i < 2 ? "#fffaf2" : "#ffb3d1")); }),
+      make(64, (x, S) => { x.fillStyle = "#f6fffa"; x.fillRect(0, 0, S, S); x.fillStyle = "rgb(150 222 192 / .5)"; x.fillRect(0, 0, S / 2, S); x.fillRect(0, 0, S, S / 2); x.fillStyle = "rgb(110 200 165 / .45)"; x.fillRect(0, 0, S / 2, S / 2); }),
+      make(120, (x, S) => { // retro circles on peach
+        x.fillStyle = "#ffd2b8"; x.fillRect(0, 0, S, S);
+        [[30, 30, ["#ff9ec4", "#fff6e0", "#ff9ec4"]], [90, 88, ["#a8d8ff", "#fff6e0", "#c7b3f5"]], [92, 26, ["#c7f0d8", "#ffb3cf"]], [26, 92, ["#fff1a8", "#ff9ec4"]]].forEach(([cx, cy, cs]) => cs.forEach((f, i) => dot(x, cx, cy, 20 - i * 6, f)));
+      }),
+      make(80, (x, S) => { x.fillStyle = "#fff7e6"; x.fillRect(0, 0, S, S); heart(x, 20, 22, 10, "#ff9ec4"); heart(x, 60, 60, 10, "#c9b3ff"); heart(x, 60, 18, 7, "#a8d8ff"); heart(x, 20, 62, 7, "#a6e6c8"); }),
+      make(72, (x, S) => { x.fillStyle = "#ffadd0"; x.fillRect(0, 0, S, S); dot(x, 18, 18, 8, "#fffaf2"); dot(x, 54, 54, 8, "#fffaf2"); }),
+      make(64, (x, S) => { // butter-yellow plaid
+        x.fillStyle = "#fff1b8"; x.fillRect(0, 0, S, S); x.fillStyle = "rgb(245 170 130 / .32)";
+        [8, 40].forEach((v) => { x.fillRect(v, 0, 6, S); x.fillRect(0, v, S, 6); });
+        x.fillStyle = "rgb(205 125 100 / .4)"; [24, 56].forEach((v) => { x.fillRect(v, 0, 1.5, S); x.fillRect(0, v, S, 1.5); });
+      }),
+      make(56, (x, S) => { x.fillStyle = "#e3d1ff"; x.fillRect(0, 0, S, S); x.strokeStyle = "#fffaff"; x.lineWidth = 9;
+        for (let i = -S; i < S * 2; i += 28) { x.beginPath(); x.moveTo(i, 0); x.lineTo(i + S, S); x.stroke(); } }),
+      make(120, (x, S) => { // pastel cheetah
+        x.fillStyle = "#ffe4c4"; x.fillRect(0, 0, S, S); const r = rng(5);
+        for (let i = 0; i < 16; i++) { const cx = r() * S, cy = r() * S, a = r() * 3, w = 6 + r() * 4, h = 4 + r() * 3; for (const ox of [-S, 0, S]) for (const oy of [-S, 0, S]) {
+          x.save(); x.translate(cx + ox, cy + oy); x.rotate(a); x.fillStyle = "#c99583"; x.beginPath(); x.ellipse(0, 0, w, h, 0, 0, 7); x.fill(); x.restore(); } }
+      })
+    ];
+  }
+  let FABRICS = [];
+  // split the two title words into letters, each with its own fabric
+  function decorateTitle() {
+    document.querySelectorAll('.title h1 [data-k]').forEach((el, w) => {
+      const text = el.textContent;
+      if (editing) { el.textContent = text; return; }
+      el.textContent = "";
+      [...text].forEach((ch, i) => {
+        if (ch === " ") { el.append(" "); return; }
+        const n = hash(el.dataset.k + i + ch), [url, size] = FABRICS[(n + i * 5 + w * 3) % FABRICS.length] || [];
+        const sp = document.createElement("span"); sp.className = "lt"; sp.textContent = ch;
+        if (url) { sp.style.backgroundImage = `url(${url})`; sp.style.setProperty("--ps", size + "px"); }
+        sp.style.setProperty("--r", (((n % 9) - 4) * .9).toFixed(1) + "deg");
+        sp.style.setProperty("--y", (((n >> 4) % 5) - 2) * 2 + "px");
+        el.appendChild(sp);
+      });
+    });
+  }
+
+  /* ---------- sample photos (drawn, so the page is never empty) ---------- */
+  const SAMPLES = [
+    { sky: ["#2b1840", "#c2456b", "#f6a65a"], sun: "#ffe0a3", hills: ["#5a2a4a", "#3a1b33", "#1c0d1a"], sunY: .62 },
+    { sky: ["#0d3a4f", "#3d8ea3", "#cfe7e4"], sun: "#f4fbf6", hills: ["#1e6576", "#11404d", "#072029"], sunY: .38 },
+    { sky: ["#ffd1e4", "#ff8fbf", "#e9408a"], sun: "#fff4f9", hills: ["#c22d6e", "#8f1d50", "#5a1031"], sunY: .36 },
+    { sky: ["#d9e2cf", "#a9bf9a", "#7c9a77"], sun: "#f5f2df", hills: ["#4f6d4c", "#2f4a33", "#17271a"], sunY: .30 },
+    { sky: ["#fff1b8", "#f7d25c", "#e8a41f"], sun: "#fffbe8", hills: ["#b9861c", "#7f5a12", "#45300a"], sunY: .4 },
+    { sky: ["#1a2a6c", "#4b5fc9", "#9fb4ff"], sun: "#e9eeff", hills: ["#2d3a8c", "#1b2560", "#0c1235"], sunY: .5 },
+    { sky: ["#e7d4ff", "#b48cf2", "#7c4bd1"], sun: "#fbf6ff", hills: ["#5e34a8", "#3f2276", "#221043"], sunY: .42 },
+    { sky: ["#f3d9c7", "#eab8a1", "#d38f78"], sun: "#fff3e6", hills: ["#b56e5e", "#8a4a44", "#5a2e2f"], sunY: .45 }
+  ];
+  function drawSample(s, seed) {
+    const W = 800, H = 1000, c = document.createElement("canvas"); c.width = W; c.height = H;
+    const x = c.getContext("2d");
+    const g = x.createLinearGradient(0, 0, 0, H * .8);
+    s.sky.forEach((col, i) => g.addColorStop(i / (s.sky.length - 1), col));
+    x.fillStyle = g; x.fillRect(0, 0, W, H);
+    const sx = W * (.25 + .5 * ((seed * 37) % 10) / 10), sy = H * s.sunY;
+    const glow = x.createRadialGradient(sx, sy, 0, sx, sy, 360);
+    glow.addColorStop(0, s.sun + "cc"); glow.addColorStop(1, s.sun + "00");
+    x.fillStyle = glow; x.fillRect(0, 0, W, H);
+    x.fillStyle = s.sun; x.beginPath(); x.arc(sx, sy, 56, 0, Math.PI * 2); x.fill();
+    s.hills.forEach((col, i) => {
+      x.fillStyle = col; x.beginPath(); x.moveTo(0, H);
+      const base = H * (.58 + i * .12), amp = 50 + i * 26;
+      for (let px = 0; px <= W; px += 8) x.lineTo(px, base - amp * (Math.sin(px / (150 + i * 60) + seed + i) * .6 + Math.sin(px / (57 + i * 18) + seed * 2) * .25));
+      x.lineTo(W, H); x.closePath(); x.fill();
+    });
+    const id = x.getImageData(0, 0, W, H), d = id.data;
+    for (let i = 0; i < d.length; i += 4) { const n = (Math.random() - .5) * 14; d[i] += n; d[i + 1] += n; d[i + 2] += n; }
+    x.putImageData(id, 0, 0);
+    return { src: c.toDataURL("image/jpeg", .85), w: W, h: H };
+  }
+
+  /* ---------- loading ---------- */
+  const loadImg = (src) => new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = src; });
+  async function hydrate(p) { const img = await loadImg(p.src); Object.assign(p, analyse(img)); p.w ||= img.naturalWidth; p.h ||= img.naturalHeight; return p; }
+  async function fileToPhoto(file) {
+    const url = URL.createObjectURL(file);
+    try {
+      const img = await loadImg(url), sc = Math.min(1, 1400 / Math.max(img.naturalWidth, img.naturalHeight));
+      const W = Math.round(img.naturalWidth * sc), H = Math.round(img.naturalHeight * sc);
+      const c = document.createElement("canvas"); c.width = W; c.height = H; c.getContext("2d").drawImage(img, 0, 0, W, H);
+      return { id: "p" + Date.now().toString(36) + Math.random().toString(36).slice(2, 7), src: c.toDataURL("image/jpeg", .82), w: W, h: H };
+    } finally { URL.revokeObjectURL(url); }
+  }
+
+  /* ---------- wheel ---------- */
+  const wheel = $("#wheel"), cv = $("#wheel-canvas"), ctx = cv.getContext("2d");
+  function drawWheel() {
+    const size = wheel.clientWidth, dpr = devicePixelRatio || 1;
+    if (!size) return;
+    cv.width = size * dpr; cv.height = size * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const R = size / 2;
+    ctx.clearRect(0, 0, size, size);
+    ctx.fillStyle = "#fff1f7"; ctx.beginPath(); ctx.arc(R, R, R - 1.5, 0, Math.PI * 2); ctx.fill();
+    ctx.strokeStyle = "#1d1420"; ctx.lineWidth = 2.5; ctx.stroke();
+    ctx.strokeStyle = "rgb(225 48 78 / .25)"; ctx.lineWidth = 1; ctx.setLineDash([3, 4]);
+    [.33, .66].forEach((f) => { ctx.beginPath(); ctx.arc(R, R, R * f, 0, Math.PI * 2); ctx.stroke(); });
+    ctx.setLineDash([]);
+    const rr = R - 10, dot = Math.max(1.3, size / 200);
+    ctx.globalAlpha = .8;
+    for (const p of photos) for (const q of p.pts) {
+      ctx.fillStyle = `rgb(${q.r},${q.g},${q.b})`;
+      ctx.beginPath(); ctx.arc(R + q.x * rr, R - q.y * rr, dot, 0, Math.PI * 2); ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+  }
+
+  function setPick(x, y, resort = true) {
+    const m = Math.hypot(x, y); if (m > 1) { x /= m; y /= m; }
+    pick = { x, y };
+    const size = wheel.clientWidth, R = size / 2, rr = R - 10;
+    $("#handle").style.left = $("#halo").style.left = (R + x * rr) + "px";
+    $("#handle").style.top = $("#halo").style.top = (R - y * rr) + "px";
+    const { h, s } = fromDisc(x, y), hx = hex(hslToRgb(h, s, .56));
+    document.documentElement.style.setProperty("--pick", hx);
+    $("#hue").textContent = String(Math.round(h)).padStart(3, "0") + "°";
+    $("#sat").textContent = String(Math.round(s * 100)).padStart(2, "0") + "%";
+    $("#hex").textContent = hx;
+    wheel.setAttribute("aria-valuetext", `Hue ${Math.round(h)} degrees, saturation ${Math.round(s * 100)} percent`);
+    if (resort) scheduleSort();
+  }
+  const setHue = (h, s = .72) => { const p = toDisc(h, s); setPick(p.x, p.y); savePick(); };
+  const savePick = () => store.set("pick", JSON.stringify(pick));
+
+  function score(p) {
+    if (!p.pts.length) return 0;
+    let t = 0; const s2 = 2 * .16 * .16;
+    for (const q of p.pts) t += Math.exp(-((q.x - pick.x) ** 2 + (q.y - pick.y) ** 2) / s2);
+    return t / p.pts.length;
+  }
+  let sortQueued = false;
+  function scheduleSort() { if (!sortQueued) { sortQueued = true; requestAnimationFrame(() => { sortQueued = false; sortGrid(); }); } }
+  function sortGrid() {
+    photos.forEach((p) => p.score = score(p));
+    const ranked = photos.slice().sort((a, b) => b.score - a.score);
+    const top = ranked[0]?.score || 0;
+    const strong = ranked.filter((p) => p.score > Math.max(.06, top * .35)).length;
+    $("#match").textContent = strong ? `${strong} photo${strong === 1 ? "" : "s"} match ♡` : "no match yet… keep looking";
+    const cards = new Map([...grid.querySelectorAll(".card")].map((c) => [c.dataset.id, c]));
+    const before = new Map(); cards.forEach((c, id) => before.set(id, c.getBoundingClientRect()));
+    ranked.forEach((p, i) => {
+      const c = cards.get(p.id); if (!c) return;
+      grid.insertBefore(c, $("#add-tile"));
+      c.classList.toggle("far", top > 0 && p.score < top * .2);
+      c.querySelector(".star text").textContent = i + 1;
+    });
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    cards.forEach((c, id) => {
+      const a = before.get(id), b = c.getBoundingClientRect(), dx = a.left - b.left, dy = a.top - b.top;
+      if (dx || dy) c.animate([{ transform: `translate(${dx}px, ${dy}px)` }, { transform: "none" }], { duration: 450, easing: "cubic-bezier(.2,.7,.2,1)" });
+    });
+  }
+
+  let dragging = false;
+  function pointerToDisc(e) {
+    const r = wheel.getBoundingClientRect(), R = r.width / 2, rr = R - 10;
+    return [(e.clientX - r.left - R) / rr, -(e.clientY - r.top - R) / rr];
+  }
+  wheel.addEventListener("pointerdown", (e) => { stopPlay(); dragging = true; wheel.setPointerCapture(e.pointerId); setPick(...pointerToDisc(e)); });
+  wheel.addEventListener("pointermove", (e) => { if (dragging) setPick(...pointerToDisc(e)); });
+  const endDrag = () => { if (dragging) { dragging = false; savePick(); } };
+  wheel.addEventListener("pointerup", endDrag); wheel.addEventListener("pointercancel", endDrag);
+  wheel.addEventListener("keydown", (e) => {
+    const d = { ArrowLeft: [-.05, 0], ArrowRight: [.05, 0], ArrowUp: [0, .05], ArrowDown: [0, -.05] }[e.key];
+    if (!d) return; e.preventDefault(); stopPlay(); setPick(pick.x + d[0], pick.y + d[1]); savePick();
+  });
+  new ResizeObserver(() => { drawWheel(); setPick(pick.x, pick.y, false); }).observe(wheel);
+
+  /* ---------- transport buttons + colour ticker ---------- */
+  const hueNow = () => fromDisc(pick.x, pick.y).h, satNow = () => Math.max(.45, fromDisc(pick.x, pick.y).s);
+  $("#rew").addEventListener("click", () => { stopPlay(); setHue((hueNow() + 330) % 360, satNow()); });
+  $("#ffw").addEventListener("click", () => { stopPlay(); setHue((hueNow() + 30) % 360, satNow()); });
+  let playing = false, raf = 0, lastSort = 0;
+  function frame(t) {
+    const { h, s } = fromDisc(pick.x, pick.y), p = toDisc((h + .5) % 360, Math.max(.5, s));
+    setPick(p.x, p.y, false);
+    if (t - lastSort > 900) { lastSort = t; sortGrid(); }
+    raf = requestAnimationFrame(frame);
+  }
+  function stopPlay() { if (!playing) return; playing = false; cancelAnimationFrame(raf); $("#play").textContent = "▶"; $("#play").setAttribute("aria-label", "Play through colours"); savePick(); sortGrid(); }
+  $("#play").addEventListener("click", () => {
+    if (playing) return stopPlay();
+    playing = true; $("#play").textContent = "❚❚"; $("#play").setAttribute("aria-label", "Pause"); raf = requestAnimationFrame(frame);
+  });
+  const TICKER = [["pink", 335], ["red", 2], ["orange", 28], ["yellow", 52], ["green", 120], ["blue", 215], ["purple", 275], ["b&w", null]];
+  TICKER.forEach(([name, h]) => {
+    const b = document.createElement("button"); b.type = "button"; b.textContent = name;
+    b.addEventListener("click", () => { stopPlay(); h == null ? (setPick(0, 0), savePick()) : setHue(h); });
+    $("#ticker").appendChild(b);
+  });
+  $("#lucky").addEventListener("click", () => { if (editing) return; stopPlay(); setHue(Math.random() * 360, .45 + Math.random() * .4); toast("picked a colour 4 u"); });
+  $("#browse").addEventListener("click", () => editing || grid.scrollIntoView({ behavior: "smooth" }));
+
+  /* ---------- grid ---------- */
+  const KINDS = ["butterfly", "gem", "star", "heart", "flower"];
+  const GEMS = [["#d2f7ff", "#3cc7e8", "#0b6f92"], ["#ffd9ec", "#ff6fb0", "#b5145f"], ["#efe3ff", "#b48cff", "#5d33b3"], ["#ffc9d0", "#e8233f", "#7d0c1d"],
+    ["#ddffd9", "#5fcf68", "#1b7a30"], ["#ffffff", "#dde6f2", "#8d9bb2"], ["#fff3c8", "#ffc935", "#a87400"]];
+  const WINGS = [["#fff3a8", "#cfe0ff", "#ff8fb8"], ["#ffc6dc", "#d9c4f5", "#ff6fae"], ["#bfe0ff", "#ffd1e8", "#ff9ec4"], ["#d9c4f5", "#c9f0e0", "#ff8fb8"]];
+  const kindOf = (p) => !p.sticker ? "" : KINDS.includes(p.sticker) ? p.sticker : KINDS[hash(p.sticker) % KINDS.length];
+  const randomSticker = () => ({ sticker: KINDS[Math.floor(Math.random() * KINDS.length)], sc: Math.floor(Math.random() * 28) });
+  let decoN = 0;
+  const pts = (arr) => arr.map(([a, b]) => a.toFixed(1) + "," + b.toFixed(1)).join(" ");
+  // a faceted plastic rhinestone with foil backing and a glint
+  function gemSVG(c, size, extra = "") {
+    const id = "gm" + (++decoN), [hi, mid, lo] = c, C = 22, R = 19, r = 8.5;
+    const ring = (rad, off) => Array.from({ length: 8 }, (_, k) => { const a = (k * 45 + off) * Math.PI / 180; return [C + Math.cos(a) * rad, C + Math.sin(a) * rad]; });
+    const out = ring(R, 22.5), inn = ring(r, 22.5);
+    let facets = "";
+    for (let k = 0; k < 8; k++) {
+      const n = (k + 1) % 8, light = [6, 7, 0].includes(k), dark = [2, 3, 4].includes(k);
+      facets += `<polygon points="${pts([out[k], out[n], inn[n], inn[k]])}" fill="${light ? "#fff" : dark ? lo : mid}" opacity="${light ? .45 : dark ? .45 : .18}"/>`;
+    }
+    return `<svg class="deco raised ${extra}" viewBox="0 0 44 44" style="width:${size}px" aria-hidden="true">
+      <defs><radialGradient id="${id}" cx="38%" cy="32%" r="75%"><stop offset="0" stop-color="${hi}"/><stop offset=".5" stop-color="${mid}"/><stop offset="1" stop-color="${lo}"/></radialGradient></defs>
+      <circle cx="${C}" cy="${C}" r="20.5" fill="${lo}"/><polygon points="${pts(out)}" fill="url(#${id})"/>${facets}
+      <polygon points="${pts(inn)}" fill="${hi}" opacity=".6"/><polygon points="${pts(inn)}" fill="none" stroke="#fff" stroke-opacity=".5" stroke-width=".6"/>
+      <ellipse cx="15.5" cy="13" rx="5.2" ry="2.6" fill="#fff" opacity=".9" transform="rotate(-38 15.5 13)"/>
+      <path d="M30 26.5 l.9 2.6 2.6.9-2.6.9-.9 2.6-.9-2.6-2.6-.9 2.6-.9z" fill="#fff" opacity=".85"/></svg>`;
+  }
+  // a star cut out of yellow construction paper, slightly wonky
+  function paperStarSVG(size, rand) {
+    const id = "ps" + (++decoN), d = Array.from({ length: 10 }, (_, i) => {
+      const a = -Math.PI / 2 + i * Math.PI / 5, r = (i % 2 ? 11.5 : 27) + (rand() - .5) * 3.2;
+      return [30 + Math.cos(a) * r, 31 + Math.sin(a) * r];
+    });
+    return `<svg class="deco flat main" viewBox="0 0 60 60" style="width:${size}px" aria-hidden="true">
+      <defs><filter id="${id}" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency="1.1" numOctaves="2" seed="${Math.floor(rand() * 90)}" result="n"/>
+      <feColorMatrix in="n" type="matrix" values="0 0 0 0 .62  0 0 0 0 .52  0 0 0 0 .2  0 0 0 .28 0" result="t"/><feComposite in="t" in2="SourceAlpha" operator="in" result="tc"/>
+      <feMerge><feMergeNode in="SourceGraphic"/><feMergeNode in="tc"/></feMerge></filter></defs>
+      <polygon points="${pts(d)}" fill="#f8e45a" filter="url(#${id})"/><polygon points="${pts(d)}" fill="none" stroke="#e2c53a" stroke-width=".7"/></svg>`;
+  }
+  // die-cut vinyl stickers: the artwork sits on a white cut border
+  function dieCut(inner, vb, size) {
+    return `<svg class="deco raised main" viewBox="${vb}" style="width:${size}px" aria-hidden="true">
+      <g fill="#fff" stroke="#fff" stroke-width="7" stroke-linejoin="round">${inner.replace(/ (fill|stroke|stroke-width|opacity)="[^"]*"/g, "")}</g>${inner}</svg>`;
+  }
+  function butterflySVG(c, size) {
+    const [up, low, ht] = c, ink = `stroke="#3b2418" stroke-width="1.5" stroke-linejoin="round"`;
+    const heart = (x, y, sc) => `<path d="M${x} ${y + 4 * sc} c${-6 * sc} ${-4 * sc} ${-5 * sc} ${-9 * sc} 0 ${-7 * sc} c${5 * sc} ${-2 * sc} ${6 * sc} ${3 * sc} 0 ${7 * sc}z" fill="${ht}" stroke="#3b2418" stroke-width="1"/>`;
+    const side = `<path d="M41 34 C51 9 76 6 75 24 C74 37 56 39 41 36 Z" fill="${up}" ${ink}/><path d="M41 37 C56 38 67 50 59 61 C51 67 42 53 41 40 Z" fill="${low}" ${ink}/>${heart(60, 21, 1.15)}${heart(52, 50, .8)}`;
+    const inner = `${side}<g transform="translate(80 0) scale(-1 1)">${side}</g>
+      <ellipse cx="40" cy="39" rx="3.2" ry="14" fill="#b48cff" ${ink}/><circle cx="40" cy="24" r="3.6" fill="#b48cff" ${ink}/>
+      <path d="M38.5 21 C36 13 31 10 28 12 C26 13.5 27.5 16 29.5 15" fill="none" ${ink}/><path d="M41.5 21 C44 13 49 10 52 12 C54 13.5 52.5 16 50.5 15" fill="none" ${ink}/>`;
+    return dieCut(inner, "0 0 80 72", size);
+  }
+  function flowerSVG(c, size) {
+    const [a, b] = c, ink = `stroke="#3b2418" stroke-width="1.4"`;
+    let petals = "";
+    for (let i = 0; i < 7; i++) { const t = i / 7 * Math.PI * 2; petals += `<ellipse cx="${(30 + Math.cos(t) * 13).toFixed(1)}" cy="${(30 + Math.sin(t) * 13).toFixed(1)}" rx="9.5" ry="7.5" transform="rotate(${(t * 180 / Math.PI).toFixed(0)} ${(30 + Math.cos(t) * 13).toFixed(1)} ${(30 + Math.sin(t) * 13).toFixed(1)})" fill="${i % 2 ? a : b}" ${ink}/>`; }
+    const inner = `${petals}<circle cx="30" cy="30" r="8.5" fill="#fff07a" ${ink}/><path d="M30 30 m-3 0 a3 3 0 1 1 3 3 a5 5 0 1 1 5-5" fill="none" stroke="#e8a21a" stroke-width="1.3"/>`;
+    return dieCut(inner, "0 0 60 60", size);
+  }
+  function jellyHeartSVG(c, size) {
+    const id = "jh" + (++decoN), [hi, mid, lo] = c;
+    return `<svg class="deco raised main" viewBox="0 0 60 56" style="width:${size}px" aria-hidden="true">
+      <defs><radialGradient id="${id}" cx="35%" cy="30%" r="80%"><stop offset="0" stop-color="${hi}"/><stop offset=".55" stop-color="${mid}"/><stop offset="1" stop-color="${lo}"/></radialGradient></defs>
+      <path d="M30 51 C10 38 3 27 5 17 C7 7 19 3 26 10 C28 12 29.3 14 30 16 C30.7 14 32 12 34 10 C41 3 53 7 55 17 C57 27 50 38 30 51 Z" fill="url(#${id})" stroke="${lo}" stroke-width="1"/>
+      <path d="M12 16 C14 10 21 9 24 13" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" opacity=".85"/>
+      <circle cx="44" cy="17" r="2.2" fill="#fff" opacity=".7"/></svg>`;
+  }
+  function stickerSVG(kind, sc, rand, size) {
+    if (kind === "gem") return gemSVG(GEMS[sc % GEMS.length], size * .72, "main");
+    if (kind === "star") return paperStarSVG(size, rand);
+    if (kind === "butterfly") return butterflySVG(WINGS[sc % WINGS.length], size * 1.1);
+    if (kind === "flower") return flowerSVG([["#ffb3d1", "#fff"], ["#c9b3ff", "#ffd6ea"], ["#a8d8ff", "#fff6c9"], ["#ff8fb8", "#ffe0ec"]][sc % 4], size * .85);
+    return jellyHeartSVG([["#ffd1e6", "#ff6fae", "#c2186b"], ["#efe3ff", "#b48cff", "#6a3fc0"], ["#ffe0e6", "#ff5a78", "#b0142f"]][sc % 3], size * .8);
+  }
+  const STAR_COLS = ["#e1304e", "#7b3fd1", "#ffd93b", "#2b49c9"];
+  function cardFor(p, i) {
+    const rand = rng(hash(p.id)), rand2 = rng(hash(p.id + "s"));
+    const f = document.createElement("figure"); f.className = "card"; f.dataset.id = p.id;
+    f.style.setProperty("--tilt", ((rand() - .5) * 8).toFixed(1) + "deg");
+    f.style.setProperty("--drop", Math.round(rand() * 18) + "px");
+    const cap = p.caption || caption(p);
+    const dots = p.palette.map((c) => `<i style="background:${hex(c)}"></i>`).join("");
+    f.innerHTML = `<button class="pic" type="button"><img alt="" loading="lazy"></button>${starSVG(i + 1, STAR_COLS[Math.floor(rand() * STAR_COLS.length)], rand)}
+      <figcaption><span class="cap"></span><span class="dots">${dots}</span></figcaption>`;
+    f.querySelector(".pic").setAttribute("aria-label", "Open photo: " + cap);
+    f.querySelector("img").src = p.src;
+    const capEl = f.querySelector(".cap");
+    capEl.textContent = (p.sample ? "sample · " : "") + cap;
+    if (!p.sample) capEl.dataset.f = "caption";
+    let kind = kindOf(p), sc = p.sc || 0;
+    if (p.sticker == null) { kind = rand2() < .7 ? KINDS[Math.floor(rand2() * KINDS.length)] : ""; sc = Math.floor(rand2() * 28); }
+    const spots = [["-26px", "auto", "auto", "64px"], ["auto", "-22px", "auto", "64px"], ["-26px", "auto", "-24px", "auto"]];
+    if (kind) {
+      const [l, r, t, b] = spots[Math.floor(rand2() * spots.length)], wrap = document.createElement("div");
+      wrap.innerHTML = stickerSVG(kind, sc, rand2, 96);
+      const el = wrap.firstElementChild;
+      Object.assign(el.style, { left: l, right: r, top: t, bottom: b });
+      el.style.setProperty("--dr", ((rand2() - .5) * 40).toFixed(0) + "deg");
+      f.appendChild(el);
+    }
+    // a few loose rhinestones scattered on the page around the photo
+    const loose = rand2() < .55 ? 1 + Math.floor(rand2() * 2) : 0;
+    for (let g = 0; g < loose; g++) {
+      const wrap = document.createElement("div");
+      wrap.innerHTML = gemSVG(GEMS[Math.floor(rand2() * GEMS.length)], 20 + Math.floor(rand2() * 12));
+      const el = wrap.firstElementChild, side = rand2() < .5;
+      Object.assign(el.style, side ? { right: "-10px", top: (30 + rand2() * 40).toFixed(0) + "%" } : { left: (10 + rand2() * 60).toFixed(0) + "%", bottom: "50px" });
+      f.appendChild(el);
+    }
+    if (editing && !p.sample) {
+      const t = document.createElement("div"); t.className = "tools";
+      t.innerHTML = `<button class="px" type="button" data-act="sticker">${kind ? "✦ Swap sticker" : "+ Sticker"}</button><button class="px" type="button" data-act="remove" aria-label="Remove photo">✕</button>`;
+      f.appendChild(t);
+    }
+    f.querySelector(".pic").addEventListener("click", () => openLB(p.id));
+    return f;
+  }
+  function render() {
+    grid.innerHTML = "";
+    photos.forEach((p, i) => grid.appendChild(cardFor(p, i)));
+    if (editing) {
+      const add = document.createElement("button"); add.type = "button"; add.className = "add"; add.id = "add-tile";
+      add.innerHTML = "<strong>glue a photo here</strong><span>✂ - - - click or drop pics anywhere</span>";
+      add.addEventListener("click", () => fileInput.click());
+      grid.appendChild(add);
+    }
+    drawWheel(); sortGrid(); applyEditable();
+    requestAnimationFrame(drawDoodles);
+  }
+  grid.addEventListener("click", (e) => {
+    const b = e.target.closest("[data-act]"); if (!b || !editing) return;
+    const p = photos.find((x) => x.id === b.closest(".card").dataset.id); if (!p) return;
+    if (b.dataset.act === "remove") {
+      photos = photos.filter((x) => x !== p);
+      if (!photos.length) loadSamples().then(() => { render(); changed(); }); else { render(); changed(); }
+      toast("photo taken out (save to keep it that way)");
+    } else {
+      // cycle through the kinds, then none
+      const cur = cardStickerShown(p) ? KINDS.indexOf(kindOf(p)) : -1;
+      const next = cur + 1 < KINDS.length ? KINDS[cur + 1] : "";
+      Object.assign(p, { sticker: next, sc: Math.floor(Math.random() * 28) });
+      render(); changed();
+    }
+  });
+  const cardStickerShown = (p) => !!grid.querySelector(`.card[data-id="${p.id}"] .deco.main`);
+
+  /* ---------- lightbox ---------- */
+  let lbIndex = 0, lbOrder = [];
+  function openLB(id) {
+    if (editing && document.activeElement?.closest?.("[data-f]")) return;
+    lbOrder = [...grid.querySelectorAll(".card")].map((c) => c.dataset.id);
+    lbIndex = lbOrder.indexOf(id); $("#lb").hidden = false; showLB(); $("#lb-close").focus();
+  }
+  function showLB() {
+    const p = photos.find((x) => x.id === lbOrder[lbIndex]); if (!p) return closeLB();
+    $("#lb-img").src = p.src;
+    $("#lb-count").textContent = `no. ${lbIndex + 1} of ${lbOrder.length}`;
+    $("#lb-cap").textContent = (p.sample ? "sample · " : "") + (p.caption || caption(p)) + " ♡";
+    const chips = $("#lb-chips"); chips.innerHTML = "";
+    p.palette.forEach((c) => {
+      const b = document.createElement("button"); b.type = "button"; b.className = "chip"; const h = hex(c);
+      b.innerHTML = `<span style="background:${h}"></span>${h}`;
+      b.addEventListener("click", () => copy(h, `copied ${h}`)); chips.appendChild(b);
+    });
+  }
+  function closeLB() { $("#lb").hidden = true; }
+  const step = (d) => { lbIndex = (lbIndex + d + lbOrder.length) % lbOrder.length; showLB(); };
+  $("#lb-close").addEventListener("click", closeLB);
+  $("#lb-prev").addEventListener("click", () => step(-1));
+  $("#lb-next").addEventListener("click", () => step(1));
+  addEventListener("keydown", (e) => {
+    if ($("#lb").hidden) return;
+    if (e.key === "Escape") closeLB(); else if (e.key === "ArrowRight") step(1); else if (e.key === "ArrowLeft") step(-1);
+  });
+
+  /* ---------- adding photos (edit mode only) ---------- */
+  const fileInput = $("#file-input");
+  async function addFiles(files) {
+    if (!editing) return;
+    const imgs = [...files].filter((f) => f.type.startsWith("image/"));
+    if (!imgs.length) return toast("those aren't pics. try jpg, png or webp");
+    toast(`gluing in ${imgs.length} photo${imgs.length > 1 ? "s" : ""}…`);
+    photos = photos.filter((p) => !p.sample);
+    let added = 0;
+    for (const f of imgs) {
+      try {
+        const p = await hydrate(await fileToPhoto(f));
+        Object.assign(p, { caption: null }, Math.random() < .55 ? randomSticker() : { sticker: "", sc: 0 });
+        photos.push(p);
+        if (serial().length > LIMIT) { photos.pop(); toast("the archive is full! take some photos out first"); break; }
+        added++;
+      } catch { toast(`couldn't read ${f.name}`); }
+    }
+    if (!photos.length) await loadSamples();
+    render(); changed();
+    if (added) toast(`added ${added} photo${added > 1 ? "s" : ""} ♡ hit save to keep them`);
+  }
+  $("#eb-add").addEventListener("click", () => fileInput.click());
+  fileInput.addEventListener("change", () => { addFiles(fileInput.files); fileInput.value = ""; });
+  let depth = 0;
+  const isFileDrag = (e) => editing && [...(e.dataTransfer?.types || [])].includes("Files");
+  addEventListener("dragenter", (e) => { if (!isFileDrag(e)) return; e.preventDefault(); depth++; $("#overlay").hidden = false; });
+  addEventListener("dragleave", () => { if (--depth <= 0) { depth = 0; $("#overlay").hidden = true; } });
+  addEventListener("dragover", (e) => { if (isFileDrag(e)) e.preventDefault(); });
+  addEventListener("drop", (e) => { if (!editing) return; e.preventDefault(); depth = 0; $("#overlay").hidden = true; if (e.dataTransfer.files.length) addFiles(e.dataTransfer.files); });
+
+  /* ---------- text + colours ---------- */
+  const DEFAULT_TEXT = {};
+  document.querySelectorAll("[data-k]").forEach((el) => DEFAULT_TEXT[el.dataset.k] = el.textContent);
+  function applyText() {
+    document.querySelectorAll("[data-k]").forEach((el) => {
+      const v = state.text[el.dataset.k];
+      el.textContent = typeof v === "string" ? v : DEFAULT_TEXT[el.dataset.k];
+    });
+    decorateTitle();
+  }
+  const THEME = { paper: ["--paper", "#f7b6d2"], pen: ["--pen", "#e1304e"], title: ["--title-fill", "#fffafc"] };
+  function applyTheme() {
+    for (const [k, [v, d]] of Object.entries(THEME)) {
+      const val = /^#[0-9a-f]{6}$/i.test(state.theme[k] || "") ? state.theme[k] : d;
+      document.documentElement.style.setProperty(v, val);
+      const input = $("#c-" + k); if (input) input.value = val;
+    }
+  }
+  for (const k of Object.keys(THEME)) $("#c-" + k).addEventListener("input", (e) => { state.theme[k] = e.target.value; applyTheme(); changed(); });
+
+  /* ---------- edit mode ---------- */
+  let editing = false, art = null, dirty = false;
+  const CE = (() => { const d = document.createElement("div"); d.contentEditable = "plaintext-only"; return d.contentEditable === "plaintext-only" ? "plaintext-only" : "true"; })();
+  function applyEditable() {
+    document.querySelectorAll("[data-k], [data-f]").forEach((el) => {
+      if (editing) { el.contentEditable = CE; el.spellcheck = false; } else el.removeAttribute("contenteditable");
+    });
+    decorateTitle();
+  }
+  function serial() {
+    const real = photos.filter((p) => !p.sample).map((p) => ({ id: p.id, src: p.src, caption: p.caption ?? null, sticker: p.sticker ?? "", sc: p.sc ?? 0 }));
+    return JSON.stringify({ v: 1, text: state.text, theme: state.theme, photos: real });
+  }
+  let changedTimer = 0;
+  function changed() {
+    clearTimeout(changedTimer);
+    changedTimer = setTimeout(() => {
+      const now = serial(); dirty = now !== saved;
+      const b = $("#eb-save"); b.classList.toggle("dirty", dirty); b.textContent = dirty ? "Save ♡" : "Saved";
+      $("#eb-meter").textContent = `${(now.length / 1e6).toFixed(1)} / ${LIMIT / 1e6} MB`;
+    }, 150);
+  }
+  function setEditing(on) {
+    editing = on; stopPlay();
+    document.body.classList.toggle("editing", on);
+    $("#editbar").hidden = !on; $("#edit-btn").textContent = on ? "✎ editing" : "✎ edit";
+    if (on) { $("#info").hidden = false; $("#info-btn").setAttribute("aria-expanded", "true"); }
+    render(); changed();
+  }
+  $("#edit-btn").addEventListener("click", () => setEditing(!editing ? true : (dirty ? (toast("save first, or tap undo all"), true) : false)));
+  $("#eb-done").addEventListener("click", () => dirty ? toast("save first, or tap undo all") : setEditing(false));
+  $("#eb-undo").addEventListener("click", async () => {
+    state = JSON.parse(saved); state.text ||= {}; state.theme ||= {};
+    applyText(); applyTheme(); await buildPhotos(); render(); changed(); toast("back to the last save");
+  });
+  document.addEventListener("input", (e) => {
+    if (!editing || !(e.target instanceof Element)) return;
+    const k = e.target.closest("[data-k]");
+    if (k) { state.text[k.dataset.k] = k.textContent; changed(); return; }
+    const f = e.target.closest("[data-f]"); if (!f) return;
+    const p = photos.find((x) => x.id === f.closest(".card")?.dataset.id); if (!p) return;
+    if (f.dataset.f === "caption") p.caption = f.textContent.trim() || null;
+    else p.sticker = f.textContent.trim();
+    changed();
+  });
+  document.addEventListener("keydown", (e) => {
+    if (editing && e.key === "Enter" && e.target instanceof Element && e.target.closest("[data-k], [data-f]")) { e.preventDefault(); e.target.blur(); }
+  }, true);
+  // a click on editable text inside a button edits the text instead of pressing the button
+  document.addEventListener("click", (e) => {
+    if (editing && e.target instanceof Element && e.target.closest("button [data-k]")) { e.preventDefault(); e.stopPropagation(); }
+  }, true);
+
+  /* ---------- saving: the page republishes itself with the new content ---------- */
+  const RESET = ":root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px/1.5 system-ui,-apple-system,sans-serif;background:#faf9f7}img{max-width:100%}[hidden]{display:none!important}";
+  const esc = (t) => t.replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]));
+  function buildDocument() {
+    const t = (k) => (typeof state.text[k] === "string" ? state.text[k] : DEFAULT_TEXT[k]).trim();
+    const title = (t("t1") + " " + t("t2")).replace(/(^|\s)\S/g, (c) => c.toUpperCase());
+    const json = serial().replace(/</g, "\\u003c");
+    return `<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>${RESET}</style></head><body><title>${esc(title)}</title>\n${SOURCE.links}\n${SOURCE.style}\n\n${SOURCE.shell}\n<script type="application/json" id="archive-data">${json}</` + `script>\n${SOURCE.app}\n</body></html>`;
+  }
+  async function save() {
+    if (!dirty) return toast("nothing new to save");
+    const html = buildDocument();
+    if (html.length > LIMIT + 9e5) return toast("too big to save, take a few photos out");
+    const b = $("#eb-save");
+    if (!art) {   // a copy hosted somewhere else: hand over the updated file instead
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(new Blob([html], { type: "text/html" })); a.download = "index.html";
+      document.body.appendChild(a); a.click(); a.remove();
+      saved = serial(); changed();
+      return toast("downloaded index.html, upload it to your site");
+    }
+    b.disabled = true; b.textContent = "Saving…";
+    try {
+      await art.publish(html);
+      saved = serial(); toast("saved ♡ everyone sees the new version");
+    } catch (e) {
+      const code = e && e.code;
+      if (code === "conflict") toast("a newer version was saved somewhere else, loading it…");
+      else if (["not_writer", "not_granted", "not_declared", "consent_required", "capability_disabled", "capability_removed"].includes(code)) {
+        toast("this view can't save changes"); $("#edit-btn").hidden = true;
+      } else if (code === "too_large") toast("too big to save, take a few photos out");
+      else if (code === "rate_limited") toast("saving too fast, wait a minute then try again");
+      else toast("couldn't save right now, try again in a moment");
+    } finally { b.disabled = false; changed(); }
+  }
+  $("#eb-save").addEventListener("click", save);
+
+  /* ---------- info + copying ---------- */
+  $("#info-btn").addEventListener("click", (e) => { const open = $("#info").hidden; $("#info").hidden = !open; e.currentTarget.setAttribute("aria-expanded", String(open)); lastDoodleH = 0; drawDoodles(); });
+  let tt;
+  function toast(msg) { const t = $("#toast"); t.textContent = msg; t.hidden = false; clearTimeout(tt); tt = setTimeout(() => t.hidden = true, 2600); }
+  function copy(text, msg) {
+    const fallback = () => { const n = document.createElement("textarea"); n.value = text; n.style.cssText = "position:fixed;left:-9999px"; document.body.appendChild(n); n.select(); try { document.execCommand("copy"); toast(msg); } catch { toast("select it + copy it"); } n.remove(); };
+    try { navigator.clipboard.writeText(text).then(() => toast(msg), fallback); } catch { fallback(); }
+  }
+  $("#copy-email").addEventListener("click", () => { if (!editing) copy($("#email").textContent.trim(), "email copied"); });
+  $("#copy-hex").addEventListener("click", () => copy($("#hex").textContent, `copied ${$("#hex").textContent}`));
+
+  /* ---------- boot ---------- */
+  async function loadSamples() { photos = await Promise.all(SAMPLES.map((s, i) => hydrate({ id: "sample" + i, sample: true, ...drawSample(s, i + 1) }))); }
+  async function buildPhotos() {
+    const list = (state.photos || []).filter((p) => p && typeof p.src === "string" && p.src.startsWith("data:image/")).map((p) => ({ ...p }));
+    photos = (await Promise.all(list.map((p) => hydrate(p).catch(() => null)))).filter(Boolean);
+    if (!photos.length) await loadSamples();
+  }
+  const tile = cheetahTile();
+  FABRICS = fabricTiles();
+  document.querySelectorAll(".leopard").forEach((el) => el.style.backgroundImage = `url(${tile})`);
+  stripedHeart(document.querySelector(".stripe.l"), 11); stripedHeart(document.querySelector(".stripe.r"), 23);
+  new ResizeObserver(() => drawDoodles()).observe(document.body);
+  applyText(); applyTheme();
+  (async () => {
+    try { const s = JSON.parse(store.get("pick") || "null"); if (s && isFinite(s.x) && isFinite(s.y)) pick = s; } catch {}
+    setPick(pick.x, pick.y, false);
+    await buildPhotos();
+    saved = serial();
+    render(); setPick(pick.x, pick.y, false);
+  })();
+  // Who may edit: inside Claude, people with edit access to this page. A copy hosted elsewhere: add #edit to the address.
+  (async () => {
+    let can = false;
+    if (window.claude && typeof window.claude.use === "function") {
+      const [a, u] = await Promise.all([window.claude.use("artifact"), window.claude.use("user")]);
+      art = a; can = !!a && !!u && await u.canEdit();
+    } else can = location.hash === "#edit";
+    $("#edit-btn").hidden = !can;
+  })();
+})();
+</script>
+
+</body>
+</html>
